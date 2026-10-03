@@ -828,3 +828,27 @@ Tab «Zadzwoń»: шторка с номером координатора
 2. Нижняя навигация `components/phone.tsx` (Start/Zadania/Centrum/Profil) — для демо. На `/d/[token]` для сеньора её лучше скрыть.
 3. Подписи статусов для сеньора отдельно от волонтёрских (`assigned` у волонтёра «Nowe zlecenie», у сеньора «Pomoc umówiona: {volunteerName}»). `volunteerName` уже есть в `PublicRequest`.
 4. Цвета: в репо `#f47b20` с белым текстом (контраст 2,7:1, не проходит WCAG AA). В прототипе — оранжевый с тёмным текстом (7,7:1) и синий `#0D3B7E` из лого.
+
+---
+
+## 17. Экран сеньора v6 = UI v4 + логика репо
+
+**Навигация (нижний бар на всех экранах):** `Start` · `Moja prośba` · `Zadzwoń` (шторка с телефоном MOPS).
+
+**Start:** приветствие → строка статуса (если есть открытая заявка) → оранжевая «Przytrzymaj i mów» (hold-to-talk из `ui.tsx`, короткий тап = «нажми ещё раз») → «albo wybierz» 2×2: Zakupy · Leki · Opieka osobista · Spacer + «Więcej».
+
+**Быстрый выбор использует тот же endpoint**, что и «Bez mikrofonu»: `POST /api/device/:token/requests` с JSON `{ transcript }`.
+`Kategoria → Kiedy? → Czy dobrze? → Wyślij` собирает строку, например `"Leki, jutro, rano. Kod 4821"`. `splitTranscript` уже вырезает код в `code4` и не кладёт его в summary.
+- «Kod z recepty (jeśli masz)» показывается только для «Leki».
+- Подпись адреса зависит от категории (dostawy zakupów / leków / spotkania / wizyty), адрес — `senior.address` из seed.
+
+**Маппинг на `TaskKind` (если понадобится колонка kind):**
+| Категория | kind |
+|---|---|
+| Zakupy | `shop` |
+| Leki | `pharmacy` |
+| Opieka osobista, Spacer, Gotowanie, Naprawa | `visit` |
+| Urząd, Inne | `other` |
+
+**Moja prośba:** пилюля статуса (`ready` «Czeka na koordynatorkę» → `assigned` «Pomoc umówiona: Jan» → `revealed` «Pomoc w drodze: Jan» → `done` «Gotowe»), summary, 4 шага, «Twoje nagranie» (только для голосовой заявки), «Anuluj prośbę» → `POST /api/device/:token/cancel`.
+«Więcej» внизу содержит «albo napisz» (textarea) — бывший «Bez mikrofonu».
