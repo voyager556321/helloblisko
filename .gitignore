@@ -24,3 +24,16 @@ build/
 # Local demo database, voice files, and the speech model
 data/
 .cache/
+# Windows / Office temp files
+desktop.ini
+~$*
+
+# Deploy / tests / local tools
+.vercel/
+coverage/
+.env*.local
+.claude/settings.local.json
+
+# Design scratch (screenshots, exports) - keep only final files in docs/Nastya
+docs/Nastya/**/*.png
+docs/Nastya/**/*.tmp
