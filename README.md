@@ -12,4 +12,9 @@ This repository contains the project(s) built during the event.
 
 ## Getting started
 
-_TBD — setup instructions will be added as the project takes shape._
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) on a phone-width viewport. Optional speech-to-text: set `GROQ_API_KEY`. Without it, the coordinator listens to the audio file.

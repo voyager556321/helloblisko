@@ -18,3 +18,8 @@ npm-debug.log*
 node_modules/
 dist/
 build/
+.next/
+*.tsbuildinfo
+
+# Local demo database and voice files
+data/

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+html,
+body {
+  background: #efe8df;
+  color: #1b2a4a;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
