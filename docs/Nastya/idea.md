@@ -852,3 +852,31 @@ Tab «Zadzwoń»: шторка с номером координатора
 
 **Moja prośba:** пилюля статуса (`ready` «Czeka na koordynatorkę» → `assigned` «Pomoc umówiona: Jan» → `revealed` «Pomoc w drodze: Jan» → `done` «Gotowe»), summary, 4 шага, «Twoje nagranie» (только для голосовой заявки), «Anuluj prośbę» → `POST /api/device/:token/cancel`.
 «Więcej» внизу содержит «albo napisz» (textarea) — бывший «Bez mikrofonu».
+
+---
+
+## 18. Голос → список задач → помощник переспрашивает → адрес по GPS (v7)
+
+**Сценарий:**
+1. Сеньор держит «Przytrzymaj i mów» и говорит: «Potrzebuję chleba, mleka i jajek. I trzeba odebrać leki z apteki, kod 4821».
+2. **Chwileczkę…**: `Nagranie zapisane → Zamieniam mowę na tekst (Whisper) → Robię listę zadań (LLM)`, транскрипт показывается.
+3. **Twoja lista**: каждая задача — отдельная строка с иконкой категории (✕ убрать лишнее).
+4. **Нет даты в речи → помощник переспрашивает**: синяя карточка «Na kiedy potrzebuje Pani pomocy?», вопрос **озвучивается** (`speechSynthesis`, `pl-PL`), есть «Powtórz pytanie». Ответ: удержать «Przytrzymaj i odpowiedz» или нажать Dziś / Jutro / Obojętnie.
+5. **Адрес по GPS**: «Udostępnij lokalizację» → шторка-объяснение → `navigator.geolocation` → «ul. Mazowiecka 4/6 · z lokalizacji telefonu». «Nie teraz» → адрес из карты MOPS (`senior.address`).
+6. «Wyślij» активна только когда есть дата и адрес. Дальше `Moja prośba` показывает список задач + термин + статусы.
+
+**Для разработчиков — контракт анализа (одна LLM-call после Whisper):**
+```json
+{
+  "items": [
+    { "kind": "shop", "title": "Zakupy", "details": "chleb, mleko, jajka" },
+    { "kind": "pharmacy", "title": "Odebrać leki z apteki", "details": null }
+  ],
+  "due_label": null,          // null → экран переспрашивает «Na kiedy?»
+  "code4": "4821",            // в items/summary не попадает
+  "needs_clarification": ["due"]
+}
+```
+- Ответ на вопрос — второе короткое аудио → тот же Whisper → обновить только `due_label` (новый `PATCH`, напр. `/api/device/:token/requests/:id/due`).
+- GPS: `navigator.geolocation.getCurrentPosition` один раз → `lat/lng` в `senior` → обратное геокодирование (OSM Nominatim) → строка адреса. Координатор видит и адрес, и точку. Волонтёр получает адрес только после `reveal` (как сейчас).
+- В демо-меню (клавиша **D**): «Nagranie z datą» (без вопроса) / «Nagranie bez daty» (с вопросом).
