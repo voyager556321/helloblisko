@@ -21,5 +21,6 @@ build/
 .next/
 *.tsbuildinfo
 
-# Local demo database and voice files
+# Local demo database, voice files, and the speech model
 data/
+.cache/

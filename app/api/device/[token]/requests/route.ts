@@ -51,13 +51,14 @@ export async function POST(req: Request, ctx: Ctx) {
     audioFile = newAudioName(ext);
     const abs = audioPath(audioFile);
     await writeFile(abs, Buffer.from(await audio.arrayBuffer()));
-    transcript = await transcribeFile(abs, mime, `voice${ext}`);
+    const spoken = String(form.get("transcript") ?? "").trim();
+    transcript = spoken || (await transcribeFile(abs, mime, `voice${ext}`));
   }
 
   const split = splitTranscript(transcript);
   const request = await createRequest({
     transcript,
-    summary: split.summary || "Запит голосом",
+    summary: split.summary || (audioFile ? "Nagranie głosowe" : "Prośba"),
     code4: split.code4,
     audioFile,
     mime,
