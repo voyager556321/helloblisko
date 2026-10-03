@@ -880,3 +880,24 @@ Tab «Zadzwoń»: шторка с номером координатора
 - Ответ на вопрос — второе короткое аудио → тот же Whisper → обновить только `due_label` (новый `PATCH`, напр. `/api/device/:token/requests/:id/due`).
 - GPS: `navigator.geolocation.getCurrentPosition` один раз → `lat/lng` в `senior` → обратное геокодирование (OSM Nominatim) → строка адреса. Координатор видит и адрес, и точку. Волонтёр получает адрес только после `reveal` (как сейчас).
 - В демо-меню (клавиша **D**): «Nagranie z datą» (без вопроса) / «Nagranie bez daty» (с вопросом).
+
+---
+
+## 19. Архитектура экрана сеньора v8 — «один вопрос на экран»
+
+```
+START ─┬─ [Powiedz, czego potrzebujesz] → SŁUCHAM (тап — старт, «Gotowe» — стоп) → CHWILECZKĘ (Whisper + LLM)
+       └─ плитка / Więcej (категория) ───────────────────────────────────────────────┐
+                                                                                      ▼
+                 только то, чего не хватает:   KIEDY?  →  GDZIE?  →  SPRAWDŹ I WYŚLIJ → MOJA PROŚBA
+```
+- **Каждый экран-вопрос одинаковый**: ассистент (иконка динамика + пузырь с вопросом, вопрос озвучивается, «Posłuchaj pytania») → **оранжевая «Powiedz»** → «albo wybierz» готовые ответы → **«Wpisz ręcznie»** (поле + «Zapisz»).
+  - Kiedy?: Dziś · Jutro rano · Jutro po południu · Obojętnie, w tym tygodniu · Wpisz ręcznie.
+  - Gdzie?: Powiedz adres · Użyj mojej lokalizacji (GPS) · Wpisz ręcznie.
+- Если сеньор сказал дату и адрес в первой записи → сразу «Sprawdź i wyślij» (демо: клавиша D → «Z datą i adresem»).
+- Прогресс-полоски сверху показывают, сколько вопросов осталось.
+- «Sprawdź i wyślij»: три блока **Co trzeba zrobić / Kiedy / Gdzie**, у каждого «Zmień», лишнюю задачу можно убрать ✕. Одна кнопка «Wyślij», ссылка «Nagraj od nowa».
+- **Moja prośba**: крупный статус («Szukamy pomocy» → «Jan przyjdzie» → «Jan jest w drodze» → «Gotowe!»), список задач + когда + где, таймлайн, «Anuluj prośbę».
+- Таббар (Start · Moja prośba · Zadzwoń) скрыт только во время записи и анализа.
+
+**Отличие от репо, которое предлагаю команде:** запись **тапом** (старт → отдельный экран «Słucham…» → «Gotowe»), а не удержанием. Держать кнопку тяжело при треморе; `MediaRecorder` тот же, меняется только `start/stop`.

@@ -201,6 +201,41 @@ textarea{width:100%;min-height:104px;border-radius:16px;border:1px solid var(--f
 .demo .menu button{border:none;background:none;border-radius:10px;padding:10px 12px;font:600 .95rem var(--f);min-height:42px}
 .demo .menu button:hover{background:var(--soft)}
 @media (max-width:600px) and (pointer:coarse){.demo{left:12px;right:12px;top:auto;bottom:12px}.demo .menu{width:auto}}
+
+/* v7: assistant question, task list, GPS */
+.ask{background:var(--navy);color:#fff;border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 14px 26px -16px rgba(13,59,126,.9)}
+.ask .who{display:flex;align-items:center;gap:12px}
+.ask .av{width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;flex:none}
+.ask .av svg{width:24px;height:24px}
+.ask .q2{font:800 1.4rem/1.25 var(--f)}
+.ask .rep{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;font:700 1rem var(--f)}
+.ask .rep svg{width:20px;height:20px}
+.chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.chip{min-height:56px;border-radius:14px;border:none;background:#fff;color:var(--navy);font:800 1.05rem var(--f);text-align:center}
+.chip:active{transform:scale(.97)}
+.answer{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center;width:100%;min-height:72px;padding:8px 14px 8px 8px;border-radius:16px;border:none;background:var(--orange);color:var(--ink);touch-action:none;user-select:none}
+.answer .m{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.answer .m svg{width:28px;height:28px}
+.answer b{font:800 1.15rem var(--f)}
+.answer.rec{background:#E07A08}
+.tasks{list-style:none;margin:0;padding:4px 16px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow)}
+.tasks li{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;min-height:76px;padding-block:8px;border-bottom:1px solid var(--line)}
+.tasks li:last-child{border-bottom:none}
+.tasks b{font:700 1.15rem/1.3 var(--f);display:block}
+.tasks small{display:block;font-size:.95rem;color:var(--muted)}
+.tasks .x{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--muted);display:grid;place-items:center}
+.tasks .x svg{width:18px;height:18px}
+.gpsbtn{display:grid;grid-template-columns:52px 1fr 24px;gap:14px;align-items:center;width:100%;min-height:76px;padding:12px 16px;margin:10px 0;border-radius:16px;border:2px dashed var(--orange-deep);background:var(--orange-soft);text-align:left}
+.gpsbtn .i{background:#fff!important;color:var(--orange-text)!important}
+.gpsbtn b{font:700 1.15rem var(--f);display:block}.gpsbtn small{font-size:.95rem;color:var(--ink)}
+.gps{display:inline-flex;align-items:center;gap:6px;font:700 .9rem var(--f);color:var(--green)}
+.gps i{width:8px;height:8px;border-radius:50%;background:#2FB463;box-shadow:0 0 0 4px var(--green-soft)}
+.mapic{width:88px;height:88px;border-radius:50%;background:var(--orange-soft);color:var(--orange-text);display:grid;place-items:center}
+.mapic svg{width:44px;height:44px}
+.b-navy[disabled]{background:#9AA9C2;box-shadow:none;cursor:not-allowed}
+.list-items{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.list-items li{display:grid;grid-template-columns:22px 1fr;gap:10px;font:700 1.1rem/1.35 var(--f)}
+.list-items li svg{width:22px;height:22px;color:var(--navy);margin-top:2px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -262,13 +297,30 @@ textarea{width:100%;min-height:104px;border-radius:16px;border:1px solid var(--f
   <div class="foot"><button class="btn b-navy" id="whenOk">Dalej</button></div>
 </section>
 
+<!-- ============ ANALIZA ============ -->
+<section class="screen" data-s="process" hidden aria-labelledby="h-proc">
+  <div class="top"></div>
+  <h1 class="title" id="h-proc">Chwileczkę…</h1>
+  <div class="heard" id="procText"></div>
+  <ol class="steps" id="procSteps"><li><span class="c" aria-hidden="true">1</span><span><b>Nagranie zapisane</b></span></li><li><span class="c" aria-hidden="true">2</span><span><b>Zamieniam mowę na tekst</b></span></li><li><span class="c" aria-hidden="true">3</span><span><b>Robię listę zadań</b></span></li></ol>
+</section>
+
 <!-- ============ CZY DOBRZE ============ -->
 <section class="screen" data-s="confirm" hidden aria-labelledby="h-conf">
-  <div class="top"><button class="back" data-go="when" aria-label="Wróć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>
-  <h1 class="title" id="h-conf">Czy dobrze?</h1>
+  <div class="top"><button class="back" id="confBack" aria-label="Wróć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+  <h1 class="title" id="h-conf">Twoja lista</h1>
+
+  <div class="ask" id="ask" hidden aria-live="assertive">
+    <div class="who"><span class="av" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></svg></span><p class="q2" id="askQ">Na kiedy potrzebuje Pani pomocy?</p></div>
+    <button class="rep" id="askRepeat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Powtórz pytanie</button>
+    <button class="answer" id="answer"><span class="m" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3.5"/></svg></span><b id="answerT">Przytrzymaj i odpowiedz</b></button>
+    <div class="chips" role="group" aria-label="Albo wybierz"><button class="chip" data-quickday="0">Dziś</button><button class="chip" data-quickday="1">Jutro</button><button class="chip" data-quickday="7">Obojętnie</button></div>
+  </div>
+
+  <ul class="tasks" id="tasks" aria-label="Lista zadań"></ul>
   <div class="info" id="confInfo"></div>
   <p class="note" id="codeNote" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg><span>Kod z recepty zobaczy tylko osoba, która odbierze leki.</span></p>
-  <div class="foot"><button class="btn b-navy" id="sendBtn">Wyślij</button></div>
+  <div class="foot"><button class="btn b-navy" id="sendBtn">Wyślij</button><button class="btn b-line" id="againBtn">Powiedz jeszcze raz</button></div>
 </section>
 
 <!-- ============ MOJA PROŚBA ============ -->
@@ -276,7 +328,7 @@ textarea{width:100%;min-height:104px;border-radius:16px;border:1px solid var(--f
   <div class="top"><h1 class="title" id="h-req">Moja prośba</h1></div>
   <div class="card" id="statusCard" hidden aria-live="polite">
     <span class="pill" id="pill"><i aria-hidden="true"></i><span id="pillT"></span></span>
-    <p class="summary" id="summary"></p>
+    <ul class="list-items" id="summary"></ul><p class="muted" id="reqWhen" style="font-size:1rem"></p>
     <ol class="steps" id="steps"></ol>
     <button class="audio" id="audio" aria-label="Odsłuchaj swoje nagranie"><span class="p" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span><span><b>Twoje nagranie</b><span class="bar"><i id="audioBar"></i></span></span><time>0:06</time></button>
   </div>
@@ -302,6 +354,14 @@ textarea{width:100%;min-height:104px;border-radius:16px;border:1px solid var(--f
   <button class="btn b-navy" data-toast="Proszę wybrać 12 345 67 89">Zadzwoń</button>
   <button class="btn b-line" data-close>Zamknij</button>
 </div></div>
+<div class="scrim" id="shGps" hidden role="dialog" aria-modal="true" aria-labelledby="h-gps"><div class="sheet">
+  <span class="grab" aria-hidden="true"></span>
+  <span class="mapic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>
+  <b id="h-gps" style="font:800 1.5rem/1.2 var(--f)">Udostępnić lokalizację?</b>
+  <p class="muted">Wtedy pomoc trafi pod właściwy adres. Lokalizację widzi tylko koordynatorka i&nbsp;osoba, która przyjdzie.</p>
+  <button class="btn b-navy" id="gpsYes">Udostępnij</button>
+  <button class="btn b-line" id="gpsNo">Nie teraz</button>
+</div></div>
 <div class="scrim" id="shCancel" hidden role="dialog" aria-modal="true" aria-labelledby="h-cancel"><div class="sheet">
   <span class="grab" aria-hidden="true"></span>
   <b id="h-cancel" style="font:800 1.5rem var(--f)">Anulować prośbę?</b>
@@ -321,6 +381,8 @@ textarea{width:100%;min-height:104px;border-radius:16px;border:1px solid var(--f
   <button data-s="revealed">Jan otworzył zlecenie</button>
   <button data-s="done">Jan oznaczył „wydane”</button>
   <p>Błędy</p>
+  <button data-v="date">Nagranie z datą (bez pytania)</button>
+  <button data-v="nodate">Nagranie bez daty (pytanie)</button>
   <button data-e="short">Puszczone za szybko</button>
   <button data-e="mic">Brak zgody na mikrofon</button>
   <button data-s="reset">↺ Od nowa</button>
@@ -352,52 +414,61 @@ document.documentElement.lang='pl';
   const DAYS=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
   const base=new Date(2026,9,3),dt=n=>{const d=new Date(base);d.setDate(d.getDate()+n);return d};
   $$('[data-short]').forEach(e=>{const d=dt(+e.dataset.short);e.textContent=DAYS[d.getDay()]+' '+d.getDate()+'.'+(d.getMonth()+1)});
-  const SAY='Apteka, jutro o dziesiątej. Kod 4821', VOL='Jan';
-  /* lib/voice.ts splitTranscript: code4 never reaches the summary */
-  const summaryOf=t=>t.replace(/\b\d{11}\b/g,'').replace(/\b(?:kod|code)\b/gi,'').replace(/\b\d{4}\b/g,'').replace(/\s+/g,' ').replace(/\s+([,.])/g,'$1').replace(/[.\s]+$/,'').trim();
+  const VOL='Jan';
+  /* demo recordings: what the senior says, and what the analysis returns */
+  const REC={
+    nodate:{text:'Potrzebuję chleba, mleka i jajek. I trzeba odebrać leki z apteki, kod 4821.',
+      items:[{cat:'zakupy',t:'Zakupy',s:'chleb, mleko, jajka'},{cat:'leki',t:'Odebrać leki z apteki',s:'kod z recepty: jest',code:'4821'}],day:null,time:null},
+    date:{text:'Apteka, jutro o dziesiątej. Kod 4821.',items:[{cat:'leki',t:'Odebrać leki z apteki',s:'kod z recepty: jest',code:'4821'}],day:1,time:'rano'}
+  };
+  let recMode='nodate';
+  const summaryOf=t=>t.replace(/\b\d{11}\b/g,'').replace(/\b(?:kod|code)\b/gi,'').replace(/\b\d{4}\b/g,'').replace(/\s+/g,' ').replace(/\s+([,.])/g,'$1').replace(/[.\s,]+$/,'').trim();
 
-  let req=null, rec=false, busy=false, words=0, t0=0, T=[], pick={cat:null,day:1,time:'rano'}, cur='home', whenFrom='home';
+  let req=null, rec=false, busy=false, words=0, t0=0, T=[], cur='home', whenFrom='home', gps=false, skipGps=false;
+  /* draft = result of analysis (voice) or of the quick choice */
+  let draft={from:null,items:[],day:1,time:'rano'};
   const later=(f,ms)=>T.push(setTimeout(f,ms)), clearT=()=>{T.forEach(clearTimeout);T=[]};
   const open=()=>req&&['ready','assigned','revealed'].includes(req.status);
 
   function go(id){
+    if(id!=='process')clearT();
     cur=id; $$('.screen').forEach(s=>s.hidden=s.dataset.s!==id);
     $$('.tab[data-tab]').forEach(t=>t.toggleAttribute('aria-current',t.dataset.tab===(id==='request'?'request':'home')));
     $$('.tab[aria-current]').forEach(t=>t.setAttribute('aria-current','page'));
     const sc=$(`[data-s="${id}"]`); sc.scrollTop=0;
-    ({home:rHome,list:rList,confirm:rConf,request:rReq}[id]||(()=>{}))();
+    ({home:rHome,list:rList,confirm:rConf,request:rReq,process:rProc}[id]||(()=>{}))();
     const h=sc.querySelector('h1'); if(h){h.tabIndex=-1;h.focus({preventScroll:true})}
   }
   function toast(t){$('#toastT').textContent=t;$('#toast').hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').hidden=true,2800)}
   function err(t){$('#errT').textContent=t||'';$('#err').hidden=!t}
+  /* the assistant speaks (browser speech synthesis, Polish) */
+  function say(text){try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='pl-PL';u.rate=.92;speechSynthesis.speak(u)}catch{}}
 
   /* POST /api/device/:token/requests — prototype stand-in */
-  function createRequest({transcript,audio}){ req={status:'ready',summary:summaryOf(transcript)||(audio?'Nagranie głosowe':'Prośba'),audio}; $('#badge').hidden=true; go('request'); toast('Wysłane do koordynatorki'); }
+  function createRequest({transcript,audio,items,when}){ req={status:'ready',summary:summaryOf(transcript)||(audio?'Nagranie głosowe':'Prośba'),items:items||[{t:summaryOf(transcript)}],when:when||'',audio}; $('#badge').hidden=true; go('request'); toast('Wysłane do koordynatorki'); }
 
   /* ---------- START ---------- */
   function rHome(){
     $('#quick').innerHTML=['zakupy','leki','opieka','spacer'].map(id=>{const c=C(id);return `<button class="q" data-cat="${id}"><span class="i${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b></button>`}).join('')+`<button class="row wide" data-go="list"><span class="i">${ic('more')}</span><b>Więcej</b>${chev}</button>`;
     $('#now').hidden=!open();
-    if(open()){const a=req.status!=='ready';$('#nowDot').className='dot'+(a?' g':'');$('#nowT').textContent={ready:'Czeka na koordynatorkę',assigned:`Pomoże ${VOL}`,revealed:`${VOL} załatwia sprawę`}[req.status];$('#nowS').textContent=req.summary;}
+    if(open()){const a=req.status!=='ready';$('#nowDot').className='dot'+(a?' g':'');$('#nowT').textContent={ready:'Czeka na koordynatorkę',assigned:`Pomoże ${VOL}`,revealed:`${VOL} załatwia sprawę`}[req.status];$('#nowS').textContent=req.items.map(i=>i.t).join(', ');}
     rTalk();
   }
   function rTalk(){
     const talk=$('#talk');talk.classList.toggle('rec',rec);talk.classList.toggle('busy',busy);
-    $('#heard').hidden=!rec&&!busy;
+    $('#heard').hidden=!rec;
     if(rec){$('#talkT').textContent='Mów…';$('#talkS').innerHTML=`<span class="timer"><i aria-hidden="true"></i><span id="tm">0:00</span></span> · ${tapMode?'naciśnij':'puść'}, gdy skończysz`;$('#talkIcon').innerHTML=ic('mic')}
-    else if(busy){$('#talkT').textContent='Wysyłam…';$('#talkS').textContent='Zamieniam nagranie na tekst';$('#talkIcon').innerHTML='<span class="spin"></span>'}
     else{$('#talkT').innerHTML='Przytrzymaj i&nbsp;mów';$('#talkS').textContent=open()?'Nowa prośba':'Powiedz, czego potrzebujesz';$('#talkIcon').innerHTML=ic('mic')}
   }
   /* hold-to-talk as in app/d/[token]/ui.tsx; a short tap switches to "tap again to finish" */
   let downAt=0, tapMode=false;
   function begin(){ if(busy)return; err(''); rec=true; t0=Date.now(); words=0; rTalk(); $('#heard').innerHTML='<span class="ph">Słucham…</span>';
-    const w=SAY.split(' '); const tick=()=>{const s=Math.floor((Date.now()-t0)/1000),el=$('#tm');if(el)el.textContent='0:'+String(s).padStart(2,'0');if(rec)later(tick,250)};tick();
-    const add=()=>{if(!rec||words>=w.length)return;words++;$('#heard').innerHTML=w.slice(0,words).join(' ')+'<span class="cursor" aria-hidden="true"></span>';later(add,330)};later(add,600);
+    const w=REC[recMode].text.split(' '); const tick=()=>{const s=Math.floor((Date.now()-t0)/1000),el=$('#tm');if(el)el.textContent='0:'+String(s).padStart(2,'0');if(rec)later(tick,250)};tick();
+    const add=()=>{if(!rec||words>=w.length)return;words++;$('#heard').innerHTML=w.slice(0,words).join(' ')+'<span class="cursor" aria-hidden="true"></span>';later(add,300)};later(add,500);
   }
   function end(){ if(!rec)return; rec=false; tapMode=false; clearT();
     if(words<2){rTalk();err('Przytrzymaj przycisk i mów, aż skończysz zdanie.');return}
-    const text=SAY.split(' ').slice(0,words).join(' '); busy=true; rTalk(); $('#heard').textContent=text;
-    later(()=>{busy=false;rTalk();createRequest({transcript:text,audio:true})},1400);
+    rTalk(); go('process');
   }
   const talk=$('#talk');
   talk.addEventListener('pointerdown',e=>{e.preventDefault();try{talk.setPointerCapture(e.pointerId)}catch{} if(tapMode&&rec){end();return} downAt=Date.now();begin()});
@@ -406,22 +477,66 @@ document.documentElement.lang='pl';
   talk.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();rec?end():(tapMode=true,begin())}});
   talk.addEventListener('contextmenu',e=>e.preventDefault());
 
-  /* ---------- quick choice → Kiedy? → Czy dobrze? → same endpoint (JSON transcript) ---------- */
-  function rList(){$('#catList').innerHTML=CATS.map(c=>`<button class="row" data-cat="${c.id}"><span class="i${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b>${chev}</button>`).join('')}
-  function startPick(id){ pick.cat=id; $('#codeField').hidden=id!=='leki'; $('#code4').value=''; whenFrom=cur; go('when'); }
-  $$('[data-day]').forEach(b=>b.addEventListener('click',()=>{pick.day=+b.dataset.day;$$('[data-day]').forEach(x=>x.setAttribute('aria-checked',x===b))}));
-  $$('[data-time]').forEach(b=>b.addEventListener('click',()=>{pick.time=b.dataset.time;$$('[data-time]').forEach(x=>x.setAttribute('aria-checked',x===b))}));
-  $('#whenOk').addEventListener('click',()=>go('confirm'));
-  $('#whenBack').addEventListener('click',()=>go(whenFrom==='list'?'list':'home'));
-  const whenT=()=>({0:'Dziś',1:'Jutro',7:'W tym tygodniu'}[pick.day])+', '+pick.time;
-  function rConf(){
-    const c=C(pick.cat), code=$('#code4').value.replace(/\D/g,'');
-    $('#confInfo').innerHTML=`<div class="ir"><span class="i${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b></div>`+
-      `<button class="row" data-go="when"><span class="i">${ic('cal')}</span><span><b>${whenT()}</b><small>Zmień termin</small></span>${chev}</button>`+
-      `<div class="ir"><span class="i">${ic('pin')}</span><span><small>${ADDR[c.id]||'Adres wizyty'}</small><b>ul. Mazowiecka 4/6</b></span></div>`;
-    $('#codeNote').hidden=!(c.id==='leki'&&code.length===4);
+  /* ---------- ANALIZA: upload → Whisper → LLM list ---------- */
+  function rProc(){
+    const r=REC[recMode], li=$$('#procSteps li');
+    $('#procText').innerHTML='<span class="ph">…</span>';
+    const step=k=>li.forEach((l,j)=>{l.className=j<k?'done':(j===k?'cur':'');l.querySelector('.c').innerHTML=j<k?CK:(j===k?'<span class="spin" style="width:20px;height:20px;border-width:3px"></span>':j+1)});
+    step(0); later(()=>step(1),600); later(()=>{$('#procText').textContent='„'+r.text+'”';step(2)},1400); later(()=>step(3),2300);
+    later(()=>{draft={from:'voice',items:r.items.map(x=>({...x})),day:r.day,time:r.time};go('confirm')},2700);
   }
-  $('#sendBtn').addEventListener('click',()=>{const c=C(pick.cat),code=$('#code4').value.replace(/\D/g,'');createRequest({transcript:`${c.t}, ${whenT().toLowerCase()}${code.length===4?'. Kod '+code:''}`,audio:false})});
+
+  /* ---------- quick choice → Kiedy? → same confirm ---------- */
+  function rList(){$('#catList').innerHTML=CATS.map(c=>`<button class="row" data-cat="${c.id}"><span class="i${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b>${chev}</button>`).join('')}
+  function startPick(id){ draft={from:'quick',items:[{cat:id,t:C(id).t,s:''}],day:1,time:'rano'}; $('#codeField').hidden=id!=='leki'; $('#code4').value=''; whenFrom=cur; syncWhen(); go('when'); }
+  function syncWhen(){$$('[data-day]').forEach(x=>x.setAttribute('aria-checked',+x.dataset.day===draft.day));$$('[data-time]').forEach(x=>x.setAttribute('aria-checked',x.dataset.time===(draft.time||'rano')))}
+  $$('[data-day]').forEach(b=>b.addEventListener('click',()=>{draft.day=+b.dataset.day;syncWhen()}));
+  $$('[data-time]').forEach(b=>b.addEventListener('click',()=>{draft.time=b.dataset.time;syncWhen()}));
+  $('#whenOk').addEventListener('click',()=>{ if(!draft.time)draft.time='rano'; if(draft.from==='quick'){const code=$('#code4').value.replace(/\D/g,'');const it=draft.items[0];if(it.cat==='leki'&&code.length===4){it.code=code;it.s='kod z recepty: jest'}} go('confirm')});
+  $('#whenBack').addEventListener('click',()=>go(draft.from==='voice'?'confirm':(whenFrom==='list'?'list':'home')));
+  $('#confBack').addEventListener('click',()=>go(draft.from==='voice'?'home':'when'));
+  const whenT=()=>draft.day==null?'':({0:'Dziś',1:'Jutro',7:'W tym tygodniu'}[draft.day])+(draft.time?', '+draft.time:'');
+
+  function rConf(){
+    const voice=draft.from==='voice', first=C(draft.items[0]?.cat)||C('inne');
+    $('#h-conf').textContent=voice?'Twoja lista':'Czy dobrze?';
+    $('#againBtn').hidden=!voice;
+    // 1. task list (what the analysis understood)
+    $('#tasks').innerHTML=draft.items.map((it,i)=>{const c=C(it.cat)||C('inne');return `<li><span class="i${c.o?' o':''}" style="width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--tile);color:var(--navy)">${ic(c.i,26)}</span><span><b>${it.t}</b>${it.s?`<small>${it.s}</small>`:''}</span>${voice&&draft.items.length>1?`<button class="x" data-del="${i}" aria-label="Usuń: ${it.t}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`:'<span></span>'}</li>`}).join('');
+    // 2. missing date → the assistant asks
+    const noDate=draft.day==null;
+    $('#ask').hidden=!noDate;
+    if(noDate){ later(()=>say($('#askQ').textContent),350); }
+    // 3. when + address (GPS)
+    const addrLabel=ADDR[first.id]||'Adres wizyty';
+    const whenRow=noDate?'':`<button class="row" data-go="when"><span class="i">${ic('cal')}</span><span><b>${whenT()}</b><small>Zmień termin</small></span>${chev}</button>`;
+    const addrRow=gps?`<div class="ir"><span class="i">${ic('pin')}</span><span><small>${addrLabel}</small><b>ul. Mazowiecka 4/6</b><span class="gps"><i aria-hidden="true"></i>z lokalizacji telefonu</span></span></div>`
+      :skipGps?`<div class="ir"><span class="i">${ic('pin')}</span><span><small>${addrLabel}</small><b>ul. Mazowiecka 4/6</b><small>z karty w MOPS</small></span></div>`
+      :`<button class="gpsbtn" id="gpsBtn"><span class="i">${ic('pin')}</span><span><b>Udostępnij lokalizację</b><small>${addrLabel} ustalimy z GPS</small></span>${chev}</button>`;
+    $('#confInfo').innerHTML=whenRow+addrRow;
+    $('#confInfo').hidden=!whenRow&&false;
+    $('#codeNote').hidden=!draft.items.some(i=>i.code);
+    const ready=!noDate&&(gps||skipGps);
+    $('#sendBtn').disabled=!ready;
+    $('#sendBtn').textContent=noDate?'Najpierw powiedz, kiedy':(!gps&&!skipGps?'Najpierw lokalizacja':'Wyślij');
+  }
+  // remove a task from the list
+  $('#tasks').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;draft.items.splice(+b.dataset.del,1);rConf()});
+  // assistant: repeat, answer by voice, or tap a chip
+  $('#askRepeat').addEventListener('click',()=>say($('#askQ').textContent));
+  $$('[data-quickday]').forEach(b=>b.addEventListener('click',()=>{draft.day=+b.dataset.quickday;draft.time=draft.time||'rano';rConf();toast('Zapisano: '+whenT().toLowerCase())}));
+  const ans=$('#answer'); let ansT=null;
+  ans.addEventListener('pointerdown',e=>{e.preventDefault();ans.classList.add('rec');$('#answerT').textContent='Mów… „jutro rano”';ansT=setTimeout(()=>{ans.classList.remove('rec');$('#answerT').textContent='Przytrzymaj i odpowiedz';draft.day=1;draft.time='rano';rConf();toast('Zrozumiałam: jutro rano');say('Dobrze, jutro rano.')},1600)});
+  ans.addEventListener('contextmenu',e=>e.preventDefault());
+  // GPS: navigator.geolocation in the real app
+  $('#confInfo').addEventListener('click',e=>{if(e.target.closest('#gpsBtn')){$('#shGps').hidden=false;$('#gpsYes').focus()}});
+  $('#gpsYes').addEventListener('click',()=>{$('#shGps').hidden=true;toast('Szukam lokalizacji…');setTimeout(()=>{gps=true;rConf();toast('Lokalizacja udostępniona')},900)});
+  $('#gpsNo').addEventListener('click',()=>{$('#shGps').hidden=true;skipGps=true;rConf()});
+  $('#againBtn').addEventListener('click',()=>{go('home');toast('Przytrzymaj pomarańczowy przycisk')});
+  $('#sendBtn').addEventListener('click',()=>{ if($('#sendBtn').disabled)return;
+    const t=draft.items.map(i=>i.t+(i.s&&!i.code?': '+i.s:'')).join('. ')+'. '+whenT()+(draft.items.find(i=>i.code)?'. Kod '+draft.items.find(i=>i.code).code:'');
+    createRequest({transcript:t,audio:draft.from==='voice',items:draft.items.map(i=>({t:i.t+(i.s&&!i.code?': '+i.s:''),cat:i.cat})),when:whenT()});
+  });
   $('#sendText').addEventListener('click',()=>{const t=$('#phrase').value.trim();if(t)createRequest({transcript:t,audio:false})});
 
   /* ---------- Moja prośba ---------- */
@@ -432,10 +547,10 @@ document.documentElement.lang='pl';
   function rReq(){
     const has=req&&req.status!=='cancelled';
     $('#statusCard').hidden=!has; $('#cancelBtn').hidden=!open(); $('#empty').hidden=has;
-    $('#emptyT').textContent=req?.status==='cancelled'?`„${req.summary}” — anulowana.`:'Nie ma teraz żadnej prośby.';
+    $('#emptyT').textContent=req?.status==='cancelled'?`Prośba anulowana.`:'Nie ma teraz żadnej prośby.';
     if(!has)return;
     const [cls,txt]=PILL[req.status];$('#pill').className='pill '+cls;$('#pillT').textContent=txt;
-    $('#summary').textContent=req.summary;$('#steps').innerHTML=steps(req.status);$('#audio').hidden=!req.audio;
+    $('#summary').innerHTML=req.items.map(i=>`<li>${CK}<span>${i.t}</span></li>`).join('');$('#reqWhen').textContent=req.when?('Termin: '+req.when.toLowerCase()):'';$('#steps').innerHTML=steps(req.status);$('#audio').hidden=!req.audio;
   }
   $('#audio').addEventListener('click',()=>{const b=$('#audioBar');b.style.transition='none';b.style.width='0';requestAnimationFrame(()=>{b.style.transition='width 6s linear';b.style.width='100%'})});
   $('#cancelBtn').addEventListener('click',()=>{$('#shCancel').hidden=false;$('#cancelYes').focus()});
@@ -448,7 +563,7 @@ document.documentElement.lang='pl';
     const tb=e.target.closest('[data-tab]');if(tb){go(tb.dataset.tab);return}
     const g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
     const s=e.target.closest('[data-sheet]');if(s){$('#shCall').hidden=false;$('#shCall').querySelector('button').focus();return}
-    if(e.target.closest('[data-close]')||e.target.classList.contains('scrim')){$('#shCall').hidden=true;$('#shCancel').hidden=true;return}
+    if(e.target.closest('[data-close]')||e.target.classList.contains('scrim')){$('#shCall').hidden=true;$('#shCancel').hidden=true;$('#shGps').hidden=true;return}
     const t=e.target.closest('[data-toast]');if(t){$('#shCall').hidden=true;toast(t.dataset.toast)}
   });
   $('#bigText').addEventListener('click',e=>{const on=document.documentElement.classList.toggle('big');e.currentTarget.setAttribute('aria-pressed',on)});
@@ -459,9 +574,10 @@ document.documentElement.lang='pl';
   document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!e.target.closest('.demo')&&e.target!==h)menu.hidden=true});
   menu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;menu.hidden=true;
     if(b.dataset.e){go('home');err(b.dataset.e==='mic'?'Przeglądarka nie puściła mikrofonu. Odśwież stronę i naciśnij jeszcze raz.':'Przytrzymaj przycisk i mów, aż skończysz zdanie.');return}
+    if(b.dataset.v){recMode=b.dataset.v;go('home');toast(b.dataset.v==='date'?'Następne nagranie: z datą':'Następne nagranie: bez daty');return}
     const s=b.dataset.s;err('');
-    if(s==='reset'){req=null;rec=false;busy=false;clearT();$('#badge').hidden=true;go('home');return}
-    if(!req||req.status==='cancelled')req={status:'ready',summary:'Apteka, jutro o dziesiątej',audio:true};
+    if(s==='reset'){req=null;rec=false;busy=false;gps=false;skipGps=false;recMode='nodate';clearT();$('#badge').hidden=true;go('home');return}
+    if(!req||req.status==='cancelled')req={status:'ready',summary:'Apteka, jutro o dziesiątej',items:[{t:'Zakupy: chleb, mleko, jajka'},{t:'Odebrać leki z apteki'}],when:'Jutro, rano',audio:true};
     req.status=s;$('#badge').hidden=cur==='request';
     cur==='home'?rHome():cur==='request'?rReq():0;
     toast({assigned:'Jan Wójcik pomoże Pani',revealed:'Jan zajmuje się sprawą',done:'Gotowe! Leki wydane'}[s]);
