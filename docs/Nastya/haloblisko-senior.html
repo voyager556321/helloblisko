@@ -120,8 +120,8 @@ h1,h2,p{margin:0}
 .live{width:100%;min-height:120px;padding:18px;border-radius:var(--r);background:#fff;box-shadow:var(--shadow);text-align:left;font:600 1.3rem/1.45 var(--f)}
 .live .ph{color:var(--muted);font-weight:400}
 .cursor{display:inline-block;width:2px;height:1.1em;background:var(--orange-deep);vertical-align:-3px;margin-left:2px;animation:blink 1s infinite}
-.priv{display:flex;align-items:center;gap:8px;font-size:1rem;color:var(--muted)}
-.priv svg{width:20px;height:20px;color:var(--navy)}
+.priv{align-self:stretch;display:grid;grid-template-columns:20px 1fr;align-items:center!important;column-gap:10px;align-items:start;text-align:left;font-size:.98rem;line-height:1.4;color:var(--muted);padding:12px 14px;border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.priv svg{width:20px;height:20px;color:var(--navy);margin-top:1px}
 
 /* ---------- ANALYZE ---------- */
 .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
@@ -207,6 +207,42 @@ h1,h2,p{margin:0}
 .demo .menu button{border:none;background:none;border-radius:10px;padding:10px 12px;font:600 .95rem var(--f);min-height:42px}
 .demo .menu button:hover{background:var(--bg)}
 @media (max-width:600px) and (pointer:coarse){.demo{left:12px;right:12px;top:auto;bottom:12px}.demo .menu{width:auto}}
+
+/* Moja prośba: compact content + action bar always visible */
+[data-s="request"]{padding-bottom:0}
+[data-s="request"] .li{min-height:60px;padding:8px 14px}
+[data-s="request"] .li .ic{width:40px;height:40px;border-radius:12px}
+[data-s="request"] .li .ic svg{width:22px;height:22px}
+[data-s="request"] .li b{font-size:1.08rem}
+.meta2{display:grid;grid-template-columns:1fr 1fr}
+.meta2 .li{border-bottom:none}
+.meta2 .li+.li{border-left:1px solid var(--line)}
+.tlh{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center}
+.tlh li{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font:700 .85rem/1.2 var(--f);color:var(--muted)}
+.tlh li::before{content:"";position:absolute;top:15px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
+.tlh li:first-child::before{display:none}
+.tlh li.done::before,.tlh li.cur::before{background:var(--navy)}
+.tlh .c{position:relative;z-index:1;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#fff;border:2px solid var(--line);font-size:.9rem}
+.tlh .c svg{width:16px;height:16px}
+.tlh li.done,.tlh li.cur{color:var(--ink)}
+.tlh li.done .c{background:var(--navy);border-color:var(--navy);color:#fff}
+.tlh li.cur .c{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+.actbar{position:sticky;bottom:0;margin:auto calc(-1 * var(--g)) 0;padding:12px var(--g) 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;background:linear-gradient(to bottom,rgba(244,247,251,0),var(--bg) 22%);z-index:2}
+.actbar .btn{min-height:60px}
+.actbar.single{grid-template-columns:1fr}
+
+.task{display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:center;width:100%;min-height:84px;padding:12px 16px;border:2px solid transparent;border-radius:var(--r);background:#fff;box-shadow:var(--shadow);text-align:left}
+.task:hover{border-color:var(--navy)}
+.task:active{transform:scale(.98)}
+.task b{font:700 1.15rem/1.25 var(--f);display:block}
+.task .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px;font-size:.95rem;color:var(--muted)}
+.st{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font:700 .85rem var(--f)}
+.st i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.wait{background:var(--orange-soft);color:var(--orange-text)}.st.go{background:var(--tile-2);color:var(--navy)}.st.ok{background:var(--green-soft);color:var(--green)}.st.off{background:#EEF1F5;color:var(--muted)}
+.task.closed{box-shadow:none;background:transparent;border-color:var(--line)}
+[data-s="task"]{padding-bottom:0}
+[data-s="task"] .li{min-height:64px}
+.desc{padding:14px 16px;font-size:1.05rem;color:var(--ink);border-bottom:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -235,7 +271,7 @@ h1,h2,p{margin:0}
     <h1 class="h1" id="h-rec">Słucham…</h1>
     <span class="bigmic" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3.5"/></svg></span>
     <div class="live" id="live" aria-live="polite"></div>
-    <p class="priv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg>Nagranie usłyszy tylko koordynatorka MOPS</p>
+    <p class="priv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg><span>Słyszy to tylko koordynatorka MOPS</span></p>
   </div>
   <div class="foot"><button class="btn b-primary" id="stop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>Gotowe</button></div>
 </section>
@@ -294,22 +330,28 @@ h1,h2,p{margin:0}
   <div class="stack" id="catList"></div>
 </section>
 
-<!-- MOJA PROŚBA -->
+<!-- MOJE PROŚBY: list of tasks -->
 <section class="screen" data-s="request" hidden aria-labelledby="h-req">
-  <div class="hello"><h1 class="h1" id="h-req">Moja prośba</h1></div>
-  <div id="reqBody" class="stack" style="gap:16px">
-    <div class="hero" id="hero"><span class="ic" id="heroIc" aria-hidden="true"></span><span><b id="heroT"></b><small id="heroS"></small></span></div>
-    <div class="box" id="reqList"></div>
-    <ol class="tl" id="tl"></ol>
-    <button class="btn b-danger" id="cancel">Anuluj prośbę</button>
-  </div>
-  <div class="empty" id="reqEmpty"><p class="muted" id="emptyT">Nie masz teraz żadnej prośby.</p><button class="btn b-voice" data-go="rec"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3.5"/></svg></span>Powiedz, czego potrzebujesz</button></div>
+  <div class="hello"><h1 class="h1" id="h-req">Moje prośby</h1></div>
+  <div id="listActive" class="stack"></div>
+  <p class="label" id="doneLabel" hidden>Zakończone</p>
+  <div id="listDone" class="stack"></div>
+  <div class="empty" id="reqEmpty"><p class="muted">Nie masz teraz żadnej prośby.</p><button class="btn b-voice" data-go="rec"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3.5"/></svg></span>Powiedz, czego potrzebujesz</button></div>
+</section>
+
+<!-- ONE TASK -->
+<section class="screen" data-s="task" hidden aria-labelledby="h-task">
+  <div class="nav"><button class="icon" data-tab="request" aria-label="Wróć do listy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button><span></span><span></span></div>
+  <div class="hero" id="hero"><span class="ic" id="heroIc" aria-hidden="true"></span><span><b id="heroT"></b><small id="heroS"></small></span></div>
+  <div class="box" id="taskBox"></div>
+  <ol class="tlh" id="tl" aria-label="Postęp"></ol>
+  <div class="actbar" id="taskActions"><button class="btn b-primary" data-tab="home"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.5 10.6L12 3.5l8.5 7.1V20a1 1 0 01-1 1h-5v-6h-5v6h-5a1 1 0 01-1-1z"/></svg>Na start</button><button class="btn b-danger" id="cancel">Anuluj</button></div>
 </section>
 
 <!-- TAB BAR -->
 <nav class="tabs" id="tabs" aria-label="Menu">
   <button class="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.5 10.6L12 3.5l8.5 7.1V20a1 1 0 01-1 1h-5v-6h-5v6h-5a1 1 0 01-1-1z"/></svg>Start</button>
-  <button class="tab" data-tab="request"><span class="badge" id="badge" hidden></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Moja prośba</button>
+  <button class="tab" data-tab="request"><span class="badge" id="badge" hidden></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Moje prośby</button>
   <button class="tab" data-call><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.7 4.3-2.2 1.4a11 11 0 006.3 6.3l1.4-2.2L20 15.5V19a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg>Zadzwoń</button>
 </nav>
 
@@ -373,21 +415,21 @@ document.documentElement.lang='pl';
     missing:{text:'Potrzebuję chleba, mleka i jajek. I trzeba odebrać leki z apteki, kod 4821.',items:[{cat:'zakupy',t:'Zakupy',s:'chleb, mleko, jajka'},{cat:'leki',t:'Odebrać leki z apteki',s:'kod z recepty podany',code:'4821'}],when:null,where:null},
     full:{text:'Apteka, jutro rano, na Mazowiecką 4 mieszkania 6. Kod 4821.',items:[{cat:'leki',t:'Odebrać leki z apteki',s:'kod z recepty podany',code:'4821'}],when:{d:1,p:'rano',l:'Jutro rano'},where:{a:'ul. Mazowiecka 4/6',src:'z nagrania'}}
   };
-  let recMode='missing', req=null, T=[], cur='home', draft=null, flow=[], hist=[];
+  let recMode='missing', reqs=[], sel=null, nid=1, T=[], cur='home', draft=null, flow=[], hist=[];
   const later=(f,ms)=>T.push(setTimeout(f,ms)), clearT=()=>{T.forEach(clearTimeout);T=[]};
-  const open=()=>req&&['ready','assigned','revealed'].includes(req.status);
+  const isOpen=r=>['ready','assigned','revealed'].includes(r.status); const active=()=>reqs.filter(isOpen);
   const say=t=>{try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pl-PL';u.rate=.92;speechSynthesis.speak(u)}catch{}};
   function toast(t){$('#toastT').textContent=t;$('#toast').hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').hidden=true,2600)}
 
   function go(id,{push=true}={}){
     clearT(); if(push&&cur!==id)hist.push(cur); cur=id;
     $$('.screen').forEach(s=>s.hidden=s.dataset.s!==id);
-    const tabFor=id==='request'?'request':'home';
+    const tabFor=(id==='request'||id==='task')?'request':'home';
     $$('.tab[data-tab]').forEach(t=>t.toggleAttribute('aria-current',t.dataset.tab===tabFor));
     $$('.tab[aria-current]').forEach(t=>t.setAttribute('aria-current','page'));
     $('#tabs').hidden=['rec','analyze'].includes(id);
     const sc=$(`[data-s="${id}"]`); sc.scrollTop=0;
-    ({home:rHome,rec:rRec,analyze:rAn,when:rQ,where:rQ,review:rRev,more:rMore,request:rReq}[id]||(()=>{}))(id);
+    ({home:rHome,rec:rRec,analyze:rAn,when:rQ,where:rQ,review:rRev,more:rMore,request:rReq,task:rTask}[id]||(()=>{}))(id);
     $$('[data-prog]').forEach(p=>{const n=flow.length,i=flow.indexOf(id);p.innerHTML=n>1?flow.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join(''):''});
     const h=sc.querySelector('h1,.bubble b'); if(h){h.tabIndex=-1;h.focus({preventScroll:true})}
   }
@@ -395,8 +437,8 @@ document.documentElement.lang='pl';
   /* ---------- 1 START ---------- */
   function rHome(){
     $('#quick').innerHTML=['zakupy','leki','opieka','spacer'].map(id=>{const c=C(id);return `<button class="tile" data-cat="${id}"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b></button>`}).join('');
-    $('#now').hidden=!open();
-    if(open()){const s=req.status;$('#nowIc').innerHTML=ic(s==='ready'?'clock':'user');$('#nowT').textContent={ready:'Szukamy pomocy',assigned:`${VOL} przyjdzie: ${req.when.toLowerCase()}`,revealed:`${VOL} jest w drodze`}[s];$('#nowS').textContent=req.items.map(i=>i.t).join(', ');}
+    const act=active(); $('#now').hidden=!act.length;
+    if(act.length){const anyGo=act.some(r=>r.status!=='ready');$('#nowIc').innerHTML=ic(anyGo?'user':'clock');$('#nowT').textContent=act.length===1?'1 prośba w toku':`${act.length} prośby w toku`;$('#nowS').textContent=act.map(r=>r.t).join(', ');}
   }
 
   /* ---------- 2 SŁUCHAM (tap to start, tap Gotowe to finish) ---------- */
@@ -457,30 +499,40 @@ document.documentElement.lang='pl';
   $('#restart').addEventListener('click',()=>go('rec'));
   /* POST /api/device/:token/requests → JSON { transcript } (or the audio for voice) */
   $('#send').addEventListener('click',()=>{
-    req={status:'ready',items:draft.items.map(i=>({t:i.t+(i.s&&!i.code?': '+i.s:''),cat:i.cat})),when:draft.when.l,where:draft.where.a};
-    flow=[];hist=[];go('request',{push:false});toast('Wysłane do koordynatorki');
+    // one task per item, so each can be read and cancelled on its own
+    draft.items.forEach(i=>reqs.unshift({id:nid++,cat:i.cat,t:i.t,s:i.s&&!i.code?i.s:'',code:!!i.code,when:draft.when.l,where:draft.where.a,quote:draft.quote||'',status:'ready',at:'dzisiaj, 9:41'}));
+    flow=[];hist=[];go('request',{push:false});toast(draft.items.length>1?`Wysłano ${draft.items.length} prośby`:'Wysłane do koordynatorki');
   });
 
   /* ---------- WIĘCEJ ---------- */
   function rMore(){$('#catList').innerHTML=CATS.map(c=>`<button class="row" data-cat="${c.id}"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><b>${c.t}</b>${chev}</button>`).join('')}
 
-  /* ---------- MOJA PROŚBA ---------- */
+  /* ---------- MOJE PROŚBY (list) → one task ---------- */
+  const ST={ready:['wait','Szukamy pomocy'],assigned:['go',`Przyjdzie ${VOL}`],revealed:['go',`${VOL} w drodze`],done:['ok','Gotowe'],cancelled:['off','Anulowana']};
+  const card=r=>{const c=C(r.cat),[k,l]=ST[r.status];return `<button class="task${isOpen(r)?'':' closed'}" data-open="${r.id}"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><span><b>${r.t}</b><span class="meta"><span class="st ${k}"><i aria-hidden="true"></i>${l}</span>${r.when}</span></span>${chev}</button>`};
   function rReq(){
-    const has=req&&req.status!=='cancelled';
-    $('#reqBody').hidden=!has;$('#reqEmpty').hidden=has;
-    $('#emptyT').textContent=req?.status==='cancelled'?'Prośba została anulowana.':'Nie masz teraz żadnej prośby.';
-    if(!has)return;
-    const s=req.status, H={ready:['wait','clock','Szukamy pomocy','Koordynatorka MOPS wybiera osobę'],assigned:['go','user',`${VOL} przyjdzie`,req.when],revealed:['go','user',`${VOL} jest w drodze`,'Załatwia Twoją sprawę'],done:['ok','check','Gotowe!',`${VOL} wszystko załatwił`]}[s];
-    $('#hero').className='hero '+H[0];$('#heroIc').innerHTML=ic(H[1],28,2.2);$('#heroT').textContent=H[2];$('#heroS').textContent=H[3];
-    $('#reqList').innerHTML=req.items.map(i=>{const c=C(i.cat);return `<div class="li"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><span><b>${i.t}</b></span><span></span></div>`}).join('')+
-      `<div class="li"><span class="ic">${ic('cal')}</span><span><b>${req.when}</b></span><span></span></div><div class="li"><span class="ic">${ic('pin')}</span><span><b>${req.where}</b></span><span></span></div>`;
-    const idx={ready:1,assigned:2,revealed:3,done:4}[s];
-    $('#tl').innerHTML=['Wysłana','Koordynatorka wybiera osobę',idx>=2?`Pomoże ${VOL}`:'Ktoś przyjdzie','Załatwione'].map((t,i)=>`<li class="${i<idx?'done':i===idx?'cur':''}"><span class="c" aria-hidden="true">${i<idx?CK:i+1}</span>${t}</li>`).join('');
-    $('#cancel').hidden=!open();
+    const act=active(),closed=reqs.filter(r=>!isOpen(r));
+    $('#listActive').innerHTML=act.map(card).join('');
+    $('#listDone').innerHTML=closed.map(card).join('');
+    $('#doneLabel').hidden=!closed.length; $('#reqEmpty').hidden=!!act.length;
+    $('#badge').hidden=true;
   }
-  $('#cancel').addEventListener('click',()=>{$('#shCancel').hidden=false;$('#cancelYes').focus()});
-  /* POST /api/device/:token/cancel */
-  $('#cancelYes').addEventListener('click',()=>{$('#shCancel').hidden=true;req.status='cancelled';rReq();toast('Prośba anulowana')});
+  $('[data-s="request"]').addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(!b)return;sel=reqs.find(r=>r.id===+b.dataset.open);go('task')});
+  function rTask(){
+    const r=sel; if(!r)return go('request',{push:false});
+    const c=C(r.cat), H={ready:['wait','clock','Szukamy pomocy','Koordynatorka MOPS wybiera osobę'],assigned:['go','user',`${VOL} przyjdzie`,r.when],revealed:['go','user',`${VOL} jest w drodze`,'Załatwia tę sprawę'],done:['ok','check','Gotowe!',`${VOL} to załatwił`],cancelled:['off','check','Anulowana','Ta prośba jest zamknięta']}[r.status];
+    $('#hero').className='hero '+H[0];$('#heroIc').innerHTML=ic(H[1],28,2.2);$('#heroT').textContent=H[2];$('#heroS').textContent=H[3];
+    $('#taskBox').innerHTML=`<div class="li"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><span><b>${r.t}</b>${r.s?`<small>${r.s}</small>`:''}${r.code?'<small>Kod z recepty: widzi tylko osoba, która odbierze leki</small>':''}</span><span></span></div>`+
+      `<div class="li"><span class="ic">${ic('cal')}</span><span><b>${r.when}</b><small>Wysłana ${r.at}</small></span><span></span></div>`+
+      `<div class="li"><span class="ic">${ic('pin')}</span><span><b>${r.where}</b></span><span></span></div>`;
+    const idx={ready:1,assigned:2,revealed:3,done:4,cancelled:1}[r.status];
+    $('#tl').hidden=r.status==='cancelled';
+    $('#tl').innerHTML=['Wysłana','Wybór osoby',idx>=2?`Pomoże ${VOL}`:'Ktoś przyjdzie','Gotowe'].map((t,i)=>`<li class="${i<idx?'done':i===idx?'cur':''}"><span class="c" aria-hidden="true">${i<idx?CK:i+1}</span>${t}</li>`).join('');
+    $('#cancel').hidden=!isOpen(r); $('#taskActions').classList.toggle('single',!isOpen(r));
+  }
+  $('#cancel').addEventListener('click',()=>{$('#h-cancel').textContent=`Anulować „${sel.t}”?`;$('#shCancel').hidden=false;$('#cancelYes').focus()});
+  /* POST /api/device/:token/cancel (per request id) */
+  $('#cancelYes').addEventListener('click',()=>{$('#shCancel').hidden=true;sel.status='cancelled';rTask();toast('Anulowano: '+sel.t)});
 
   /* ---------- global ---------- */
   document.addEventListener('click',e=>{
@@ -500,10 +552,12 @@ document.documentElement.lang='pl';
   menu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;menu.hidden=true;
     if(b.dataset.v){recMode=b.dataset.v;toast(b.dataset.v==='full'?'Następne nagranie: wszystko powiedziane':'Następne nagranie: bez daty i adresu');return}
     const s=b.dataset.s;
-    if(s==='reset'){req=null;recMode='missing';flow=[];hist=[];$('#badge').hidden=true;go('home',{push:false});return}
-    if(!req||req.status==='cancelled')req={status:'ready',items:[{t:'Zakupy: chleb, mleko, jajka',cat:'zakupy'},{t:'Odebrać leki z apteki',cat:'leki'}],when:'Jutro rano',where:'ul. Mazowiecka 4/6'};
-    req.status=s;$('#badge').hidden=cur==='request';
-    if(cur==='home')rHome(); if(cur==='request')rReq();
+    if(s==='reset'){reqs=[];sel=null;recMode='missing';flow=[];hist=[];$('#badge').hidden=true;go('home',{push:false});return}
+    if(!active().length){[{cat:'leki',t:'Odebrać leki z apteki',s:'',code:true},{cat:'zakupy',t:'Zakupy',s:'chleb, mleko, jajka'}].forEach(i=>reqs.unshift({id:nid++,...i,when:'Jutro rano',where:'ul. Mazowiecka 4/6',status:'ready',at:'dzisiaj, 9:41'}))}
+    const targets=cur==='task'&&sel&&isOpen(sel)?[sel]:[active()[active().length-1]];
+    targets.forEach(r=>{if(r)r.status=s});
+    $('#badge').hidden=cur==='request'||cur==='task';
+    if(cur==='home')rHome(); if(cur==='request')rReq(); if(cur==='task')rTask();
     toast({assigned:'Jan Wójcik Ci pomoże',revealed:'Jan jest w drodze',done:'Gotowe! Sprawa załatwiona'}[s]);
   });
   go('home',{push:false});
