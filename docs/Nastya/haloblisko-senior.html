@@ -1,8 +1,3 @@
-<!doctype html>
-<html lang="pl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HaloBlisko Senior</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -246,8 +241,6 @@ h1,h2,p{margin:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
-</head>
-<body>
 <div class="stage">
 <span class="blob a" aria-hidden="true"></span><span class="blob b" aria-hidden="true"></span>
 <div class="fit"><div class="phone" aria-label="HaloBlisko — ekran seniora">
@@ -334,8 +327,10 @@ h1,h2,p{margin:0}
 <section class="screen" data-s="request" hidden aria-labelledby="h-req">
   <div class="hello"><h1 class="h1" id="h-req">Moje prośby</h1></div>
   <div id="listActive" class="stack"></div>
-  <p class="label" id="doneLabel" hidden>Zakończone</p>
+  <p class="label" id="doneLabel" hidden>Zrobione</p>
   <div id="listDone" class="stack"></div>
+  <p class="label" id="cancLabel" hidden>Anulowane</p>
+  <div id="listCanc" class="stack"></div>
   <div class="empty" id="reqEmpty"><p class="muted">Nie masz teraz żadnej prośby.</p><button class="btn b-voice" data-go="rec"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3.5"/></svg></span>Powiedz, czego potrzebujesz</button></div>
 </section>
 
@@ -511,10 +506,11 @@ document.documentElement.lang='pl';
   const ST={ready:['wait','Szukamy pomocy'],assigned:['go',`Przyjdzie ${VOL}`],revealed:['go',`${VOL} w drodze`],done:['ok','Gotowe'],cancelled:['off','Anulowana']};
   const card=r=>{const c=C(r.cat),[k,l]=ST[r.status];return `<button class="task${isOpen(r)?'':' closed'}" data-open="${r.id}"><span class="ic${c.o?' o':''}">${ic(c.i)}</span><span><b>${r.t}</b><span class="meta"><span class="st ${k}"><i aria-hidden="true"></i>${l}</span>${r.when}</span></span>${chev}</button>`};
   function rReq(){
-    const act=active(),closed=reqs.filter(r=>!isOpen(r));
+    const act=active(),canc=reqs.filter(r=>r.status==='cancelled'),done=reqs.filter(r=>!isOpen(r)&&r.status!=='cancelled');
     $('#listActive').innerHTML=act.map(card).join('');
-    $('#listDone').innerHTML=closed.map(card).join('');
-    $('#doneLabel').hidden=!closed.length; $('#reqEmpty').hidden=!!act.length;
+    $('#listDone').innerHTML=done.map(card).join('');
+    $('#listCanc').innerHTML=canc.map(card).join('');
+    $('#doneLabel').hidden=!done.length; $('#cancLabel').hidden=!canc.length; $('#reqEmpty').hidden=!!act.length;
     $('#badge').hidden=true;
   }
   $('[data-s="request"]').addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(!b)return;sel=reqs.find(r=>r.id===+b.dataset.open);go('task')});
@@ -563,6 +559,3 @@ document.documentElement.lang='pl';
   go('home',{push:false});
 })();
 </script>
-
-</body>
-</html>
