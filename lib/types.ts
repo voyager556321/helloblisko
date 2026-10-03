@@ -10,11 +10,21 @@ export type Senior = {
   pesel: string;
 };
 
+export type TaskKind = "pharmacy" | "shop" | "visit" | "other";
+
+export type Pace = {
+  pharmacy: number[];
+  shop: number[];
+  visit: number[];
+  other: number[];
+};
+
 export type Volunteer = {
   id: string;
   name: string;
   phone: string;
   districts: string[];
+  pace?: Pace;
 };
 
 export type RequestRow = {

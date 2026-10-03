@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Debug, OrangeButton, Phone, StatusPill, cardClass } from "@/components/phone";
+import { paceLabel } from "@/lib/pace";
 import { usePoll } from "@/lib/use-poll";
 import type { PublicRequest, Volunteer } from "@/lib/types";
 
@@ -146,6 +147,7 @@ function Card({
       {closed ? null : (
         <div className="mt-6 space-y-2">
           <p className="text-sm font-semibold">Jedna osoba z listy filii</p>
+          <p className="text-xs text-[#98a2b3]">Czas od przyjęcia do zamknięcia. Wolontariusz tego nie widzi.</p>
           {volunteers.map((volunteer) => {
             const selected = request.volunteerId === volunteer.id;
             return (
@@ -162,8 +164,11 @@ function Card({
                   <span className={`block text-xs ${selected ? "text-white/70" : "text-[#667085]"}`}>
                     {volunteer.districts.join(", ")}
                   </span>
+                  <span className={`mt-1 block text-xs ${selected ? "text-white/70" : "text-[#667085]"}`}>
+                    {paceLabel(volunteer.pace, summary)}
+                  </span>
                 </span>
-                <span className={selected ? "text-[#f47b20]" : "text-[#f47b20]"}>›</span>
+                <span className="text-[#f47b20]">›</span>
               </button>
             );
           })}

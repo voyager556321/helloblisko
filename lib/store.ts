@@ -1,7 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { HOME_TOKEN, type DB, type PublicRequest, type RequestRow, type Status } from "./types";
+import { emptyPace, kindOf } from "./pace";
+import { HOME_TOKEN, type DB, type Pace, type PublicRequest, type RequestRow, type Status, type Volunteer } from "./types";
 
 const dataDir = path.join(process.cwd(), "data");
 const dbPath = path.join(dataDir, "db.json");
@@ -20,9 +21,27 @@ function seed(): DB {
       pesel: "45010112345",
     },
     volunteers: [
-      { id: "v-jan", name: "Jan Wójcik", phone: "600 100 201", districts: ["Krowodrza"] },
-      { id: "v-ewa", name: "Ewa Lis", phone: "600 100 202", districts: ["Podgórze"] },
-      { id: "v-piotr", name: "Piotr Maj", phone: "600 100 203", districts: ["Krowodrza", "Grzegórzki"] },
+      {
+        id: "v-jan",
+        name: "Jan Wójcik",
+        phone: "600 100 201",
+        districts: ["Krowodrza"],
+        pace: { ...emptyPace(), pharmacy: [6, 5, 8] },
+      },
+      {
+        id: "v-ewa",
+        name: "Ewa Lis",
+        phone: "600 100 202",
+        districts: ["Podgórze"],
+        pace: { ...emptyPace(), pharmacy: [22, 18] },
+      },
+      {
+        id: "v-piotr",
+        name: "Piotr Maj",
+        phone: "600 100 203",
+        districts: ["Krowodrza", "Grzegórzki"],
+        pace: { ...emptyPace(), shop: [35] },
+      },
     ],
     requests: [],
   };
@@ -31,7 +50,9 @@ function seed(): DB {
 function read(): DB {
   mkdirSync(audioDir, { recursive: true });
   try {
-    return JSON.parse(readFileSync(dbPath, "utf8")) as DB;
+    const db = JSON.parse(readFileSync(dbPath, "utf8")) as DB;
+    db.volunteers = db.volunteers.map(withPace);
+    return db;
   } catch {
     const db = seed();
     writeFileSync(dbPath, JSON.stringify(db, null, 2));
@@ -67,6 +88,22 @@ function view(): Promise<DB> {
     () => undefined,
   );
   return run;
+}
+
+const demoPace: Record<string, Pace> = {
+  "v-jan": { ...emptyPace(), pharmacy: [6, 5, 8] },
+  "v-ewa": { ...emptyPace(), pharmacy: [22, 18] },
+  "v-piotr": { ...emptyPace(), shop: [35] },
+};
+
+function withPace(volunteer: Volunteer): Volunteer {
+  if (volunteer.pace) return volunteer;
+  return { ...volunteer, pace: demoPace[volunteer.id] ?? emptyPace() };
+}
+
+export function volunteerForClient(volunteer: Volunteer): Omit<Volunteer, "pace"> {
+  const { pace: _pace, ...rest } = volunteer;
+  return rest;
 }
 
 const OPEN: Status[] = ["ready", "assigned", "revealed"];
@@ -209,7 +246,7 @@ export async function jobsFor(volunteerId: string) {
   const jobs = db.requests
     .filter((r) => r.volunteerId === volunteerId && r.status !== "cancelled")
     .map((r) => toPublic(db, r, r.status === "revealed"));
-  return { volunteer, jobs };
+  return { volunteer: volunteerForClient(volunteer), jobs };
 }
 
 export async function revealJob(id: string, volunteerId: string) {
@@ -230,8 +267,16 @@ export async function doneJob(id: string, volunteerId: string) {
     const row = db.requests.find((r) => r.id === id && r.volunteerId === volunteerId);
     if (!row) return { error: "Це доручення не твоє" as const };
     if (row.status !== "revealed") return { error: "Спочатку відкрий адресу" as const };
+    const doneAt = new Date();
     row.status = "done";
-    row.doneAt = new Date().toISOString();
+    row.doneAt = doneAt.toISOString();
+    const volunteer = db.volunteers.find((item) => item.id === volunteerId);
+    if (volunteer && row.revealedAt) {
+      const minutes = Math.max(1, Math.round((doneAt.getTime() - new Date(row.revealedAt).getTime()) / 60000));
+      const pace = volunteer.pace ?? emptyPace();
+      pace[kindOf(row.summary)] = [...pace[kindOf(row.summary)], minutes];
+      volunteer.pace = pace;
+    }
     return { request: toPublic(db, row, false) };
   });
 }
