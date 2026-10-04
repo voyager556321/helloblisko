@@ -14,15 +14,15 @@ const links = [
 export function Phone({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-[#fff8f3] text-[#1b2a4a]">
+    <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-[#F4F7FB] text-[#0F1D33]">
       <div className="flex-1 px-5 pt-6 pb-4">{children}</div>
-      <nav className="sticky bottom-0 grid grid-cols-4 border-t border-[#f0e6dc] bg-[#fff8f3] pb-[env(safe-area-inset-bottom)]">
+      <nav className="sticky bottom-0 grid grid-cols-4 border-t border-[#E3E8F0] bg-white pb-[env(safe-area-inset-bottom)]">
         {links.map((link) => {
           const on = link.match === "/" ? path === "/" : path.startsWith(link.match);
           return (
             <Link key={link.href} href={link.href} className="flex flex-col items-center gap-1 py-2.5">
               <NavIcon name={link.label} on={on} />
-              <span className={`text-[11px] ${on ? "font-semibold text-[#f47b20]" : "text-[#98a2b3]"}`}>{link.label}</span>
+              <span className={`text-[11px] ${on ? "font-semibold text-[#0D3B7E]" : "text-[#4A5A75]"}`}>{link.label}</span>
             </Link>
           );
         })}
@@ -32,7 +32,7 @@ export function Phone({ children }: { children: React.ReactNode }) {
 }
 
 function NavIcon({ name, on }: { name: string; on: boolean }) {
-  const stroke = on ? "#f47b20" : "#98a2b3";
+  const stroke = on ? "#0D3B7E" : "#4A5A75";
   const common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke, strokeWidth: 1.8 };
   if (name === "Start") {
     return (
@@ -68,8 +68,8 @@ function NavIcon({ name, on }: { name: string; on: boolean }) {
 export function Debug({ data }: { data: unknown }) {
   return (
     <details className="mt-8">
-      <summary className="cursor-pointer text-xs text-[#98a2b3]">Dane techniczne</summary>
-      <pre className="mt-2 max-h-48 overflow-auto text-[11px] leading-relaxed break-all whitespace-pre-wrap text-[#667085]">
+      <summary className="cursor-pointer text-xs text-[#4A5A75]">Dane techniczne</summary>
+      <pre className="mt-2 max-h-48 overflow-auto text-[11px] leading-relaxed break-all whitespace-pre-wrap text-[#4A5A75]">
         {JSON.stringify(data, null, 2)}
       </pre>
     </details>
@@ -89,10 +89,10 @@ export function StatusPill({ status }: { status: Status }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-        hot ? "bg-[#fff1e6] text-[#f47b20]" : "bg-[#f4f1ec] text-[#667085]"
+        hot ? "bg-[#FFF1E0] text-[#A65A00]" : "bg-[#EEF3FA] text-[#4A5A75]"
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${hot ? "bg-[#f47b20]" : "bg-[#98a2b3]"}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${hot ? "bg-[#F7992B]" : "bg-[#7D8CA5]"}`} />
       {label[status]}
     </span>
   );
@@ -111,7 +111,7 @@ export function OrangeButton({
     <button
       type={type}
       onClick={onClick}
-      className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#f47b20] text-[15px] font-semibold text-white"
+      className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#0D3B7E] text-[15px] font-semibold text-white"
     >
       {children}
     </button>
@@ -123,7 +123,7 @@ export function NavyButton({ children, onClick }: { children: React.ReactNode; o
     <button
       type="button"
       onClick={onClick}
-      className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#1b2a4a] text-[15px] font-semibold text-white"
+      className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#0D3B7E] text-[15px] font-semibold text-white"
     >
       {children}
     </button>
@@ -131,5 +131,5 @@ export function NavyButton({ children, onClick }: { children: React.ReactNode; o
 }
 
 export function cardClass() {
-  return "rounded-[22px] bg-white p-4 shadow-[0_8px_24px_rgba(27,42,74,0.06)]";
+  return "rounded-[20px] bg-white p-4 shadow-[0_1px_2px_rgba(15,29,51,0.05),0_8px_24px_-14px_rgba(15,29,51,0.2)]";
 }

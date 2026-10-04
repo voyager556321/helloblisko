@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { emptyPace, kindOf } from "./pace";
 import { HOME_TOKEN, type DB, type Pace, type PublicRequest, type RequestRow, type Status, type Volunteer } from "./types";
@@ -49,20 +49,22 @@ function seed(): DB {
 
 function read(): DB {
   mkdirSync(audioDir, { recursive: true });
-  try {
-    const db = JSON.parse(readFileSync(dbPath, "utf8")) as DB;
-    db.volunteers = db.volunteers.map(withPace);
-    return db;
-  } catch {
+  if (!existsSync(dbPath)) {
     const db = seed();
-    writeFileSync(dbPath, JSON.stringify(db, null, 2));
+    write(db);
     return db;
   }
+  const raw = readFileSync(dbPath, "utf8");
+  const db = JSON.parse(raw) as DB;
+  db.volunteers = db.volunteers.map(withPace);
+  return db;
 }
 
 function write(db: DB) {
   mkdirSync(dataDir, { recursive: true });
-  writeFileSync(dbPath, JSON.stringify(db, null, 2));
+  const tmp = `${dbPath}.${process.pid}.tmp`;
+  writeFileSync(tmp, JSON.stringify(db, null, 2));
+  renameSync(tmp, dbPath);
 }
 
 function update<T>(fn: (db: DB) => T): Promise<T> {
@@ -204,10 +206,27 @@ export async function latestForHome() {
   return row ? toPublic(db, row, false) : null;
 }
 
+export async function homeFeed() {
+  const db = await getDb();
+  return {
+    senior: { name: db.senior.name, address: db.senior.address, district: db.senior.district },
+    requests: db.requests.map((row) => toPublic(db, row, false)),
+  };
+}
+
 export async function cancelLatest() {
   return update((db) => {
     const row = db.requests.find((r) => OPEN.includes(r.status));
     if (!row) return { error: "Немає відкритого запиту" as const };
+    row.status = "cancelled";
+    return { request: toPublic(db, row, false) };
+  });
+}
+
+export async function cancelRequest(id: string) {
+  return update((db) => {
+    const row = db.requests.find((item) => item.id === id);
+    if (!row || !OPEN.includes(row.status)) return { error: "Немає відкритого запиту" as const };
     row.status = "cancelled";
     return { request: toPublic(db, row, false) };
   });

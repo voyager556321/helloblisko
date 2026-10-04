@@ -30,18 +30,18 @@ export default function CoordPage() {
       ) : (
         <>
           <h1 className="text-[28px] leading-tight font-bold">Centrum</h1>
-          <p className="mt-1 text-sm text-[#667085]">Prośby z domów Twojej filii</p>
-          <p className="mt-3 text-xs text-[#98a2b3]">
+          <p className="mt-1 text-sm text-[#4A5A75]">Prośby z domów Twojej filii</p>
+          <p className="mt-3 text-xs text-[#7D8CA5]">
             {data?.speech ? "Transkrypcja włączona." : "Bez klucza — odsłuchaj nagranie albo wpisz zdanie."}
           </p>
           {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
           <div className="mt-5 space-y-3">
-            {data?.requests.length === 0 ? <p className="text-sm text-[#667085]">Kolejka jest pusta.</p> : null}
+            {data?.requests.length === 0 ? <p className="text-sm text-[#4A5A75]">Kolejka jest pusta.</p> : null}
             {data?.requests.map((item) => (
               <button key={item.id} type="button" onClick={() => setOpenId(item.id)} className={`block w-full text-left ${cardClass()}`}>
                 <StatusPill status={item.status} />
                 <p className="mt-3 font-semibold">{item.summary || "Prośba głosowa"}</p>
-                <p className="mt-1 text-sm text-[#667085]">
+                <p className="mt-1 text-sm text-[#4A5A75]">
                   {item.seniorName} · {item.district}
                 </p>
               </button>
@@ -112,14 +112,14 @@ function Card({
       </button>
       <StatusPill status={request.status} />
       <h1 className="mt-3 text-[26px] leading-tight font-bold">{request.seniorName}</h1>
-      <p className="mt-1 text-sm text-[#667085]">{request.district}</p>
+      <p className="mt-1 text-sm text-[#4A5A75]">{request.district}</p>
       <div className={`mt-5 ${cardClass()}`}>
         {request.hasAudio ? (
           <audio className="w-full" controls src={`/api/audio/${request.id}`} />
         ) : (
-          <p className="text-sm text-[#667085]">To prośba wpisana tekstem, bez pliku.</p>
+          <p className="text-sm text-[#4A5A75]">To prośba wpisana tekstem, bez pliku.</p>
         )}
-        <p className="mt-3 text-xs text-[#98a2b3]">Transkrypcja</p>
+        <p className="mt-3 text-xs text-[#7D8CA5]">Transkrypcja</p>
         <p className="text-sm">{request.transcript || "—"}</p>
       </div>
       <label className="mt-5 block text-sm font-semibold" htmlFor={`summary-${request.id}`}>
@@ -129,7 +129,7 @@ function Card({
         id={`summary-${request.id}`}
         value={summary}
         onChange={(event) => setSummary(event.target.value)}
-        className="mt-2 h-12 w-full rounded-2xl border border-[#f0e6dc] bg-white px-3"
+        className="mt-2 h-12 w-full rounded-2xl border border-[#E3E8F0] bg-white px-3"
       />
       <label className="mt-4 block text-sm font-semibold" htmlFor={`code-${request.id}`}>
         Kod recepty
@@ -139,7 +139,7 @@ function Card({
         value={code4}
         onChange={(event) => setCode4(event.target.value)}
         inputMode="numeric"
-        className="mt-2 h-12 w-full rounded-2xl border border-[#f0e6dc] bg-white px-3"
+        className="mt-2 h-12 w-full rounded-2xl border border-[#E3E8F0] bg-white px-3"
       />
       <div className="mt-4">
         <OrangeButton onClick={save}>Zapisz</OrangeButton>
@@ -147,7 +147,7 @@ function Card({
       {closed ? null : (
         <div className="mt-6 space-y-2">
           <p className="text-sm font-semibold">Jedna osoba z listy filii</p>
-          <p className="text-xs text-[#98a2b3]">Czas od przyjęcia do zamknięcia. Wolontariusz tego nie widzi.</p>
+          <p className="text-xs text-[#7D8CA5]">Czas od przyjęcia do zamknięcia. Wolontariusz tego nie widzi.</p>
           {volunteers.map((volunteer) => {
             const selected = request.volunteerId === volunteer.id;
             return (
@@ -156,25 +156,25 @@ function Card({
                 type="button"
                 onClick={() => assign(volunteer.id)}
                 className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left ${
-                  selected ? "bg-[#1b2a4a] text-white" : "bg-white shadow-[0_8px_24px_rgba(27,42,74,0.06)]"
+                  selected ? "bg-[#0D3B7E] text-white" : "bg-white shadow-[0_8px_24px_rgba(27,42,74,0.06)]"
                 }`}
               >
                 <span>
                   <span className="block font-semibold">{volunteer.name}</span>
-                  <span className={`block text-xs ${selected ? "text-white/70" : "text-[#667085]"}`}>
+                  <span className={`block text-xs ${selected ? "text-white/70" : "text-[#4A5A75]"}`}>
                     {volunteer.districts.join(", ")}
                   </span>
-                  <span className={`mt-1 block text-xs ${selected ? "text-white/70" : "text-[#667085]"}`}>
+                  <span className={`mt-1 block text-xs ${selected ? "text-white/70" : "text-[#4A5A75]"}`}>
                     {paceLabel(volunteer.pace, summary)}
                   </span>
                 </span>
-                <span className="text-[#f47b20]">›</span>
+                <span className="text-[#0D3B7E]">›</span>
               </button>
             );
           })}
         </div>
       )}
-      {note ? <p className="mt-3 text-sm text-[#667085]">{note}</p> : null}
+      {note ? <p className="mt-3 text-sm text-[#4A5A75]">{note}</p> : null}
     </>
   );
 }

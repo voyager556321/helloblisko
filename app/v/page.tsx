@@ -75,18 +75,18 @@ function ListView({
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-[28px] leading-tight font-bold">Dzień dobry, {hello}</h1>
-          <p className="mt-1 text-sm text-[#667085]">Pomóż komuś z Twojej filii</p>
+          <p className="mt-1 text-sm text-[#4A5A75]">Pomóż komuś z Twojej filii</p>
         </div>
-        <span className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#f47b20] shadow-[0_8px_24px_rgba(27,42,74,0.06)]">
+        <span className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#F7992B] shadow-[0_8px_24px_rgba(27,42,74,0.06)]">
           <Bell />
         </span>
       </div>
-      <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#fff1e6] px-4 py-3">
+      <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#FFF1E0] px-4 py-3">
         <span className="flex items-center gap-2 text-sm font-semibold">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#f47b20]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#F7992B]" />
           {ready}
         </span>
-        <span className="text-[#f47b20]">▾</span>
+        <span className="text-[#F7992B]">▾</span>
       </div>
       <div className="mt-3 flex gap-3 text-sm">
         {people.map((item) => (
@@ -94,7 +94,7 @@ function ListView({
             key={item.id}
             type="button"
             onClick={() => onWho(item.id)}
-            className={who === item.id ? "font-semibold text-[#f47b20]" : "text-[#98a2b3]"}
+            className={who === item.id ? "font-semibold text-[#F7992B]" : "text-[#7D8CA5]"}
           >
             {item.name}
           </button>
@@ -105,17 +105,17 @@ function ListView({
       </div>
       {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
       <div className="mt-3 space-y-3">
-        {active.length === 0 ? <p className="text-sm text-[#667085]">Nie masz teraz zlecenia.</p> : null}
+        {active.length === 0 ? <p className="text-sm text-[#4A5A75]">Nie masz teraz zlecenia.</p> : null}
         {active.map((job) => (
           <article key={job.id} className={cardClass()}>
             <div className="flex gap-3">
               <IconBadge kind={kindOf(job.summary)} />
               <div className="min-w-0 flex-1">
                 <p className="font-semibold">{titleOf(job.summary)}</p>
-                <p className="mt-0.5 text-sm text-[#667085]">
+                <p className="mt-0.5 text-sm text-[#4A5A75]">
                   {job.district} · {whenLabel(job.createdAt)}
                 </p>
-                <p className="mt-2 text-xs text-[#98a2b3]">{tagOf(job.summary)}</p>
+                <p className="mt-2 text-xs text-[#7D8CA5]">{tagOf(job.summary)}</p>
               </div>
             </div>
             <div className="mt-4">
@@ -172,12 +172,12 @@ function Details({
         <Row icon="time" text="około 30 min" />
       </div>
       <h2 className="mt-6 text-lg font-bold">Opis</h2>
-      <p className="mt-2 text-sm leading-relaxed text-[#667085]">{descriptionOf(job.summary)}</p>
+      <p className="mt-2 text-sm leading-relaxed text-[#4A5A75]">{descriptionOf(job.summary)}</p>
       <div className={`mt-5 flex items-center gap-3 ${cardClass()}`}>
         <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f4f1ec] text-lg">⌂</span>
         <div>
           <p className="font-semibold">Koordynator MOPS</p>
-          <p className="text-sm text-[#667085]">Adres i kod zobaczysz po przyjęciu zlecenia.</p>
+          <p className="text-sm text-[#4A5A75]">Adres i kod zobaczysz po przyjęciu zlecenia.</p>
         </div>
       </div>
       {note ? <p className="mt-3 text-sm text-red-700">{note}</p> : null}
@@ -209,18 +209,18 @@ function Active({
   ];
   return (
     <>
-      <div className="flex items-center gap-3 rounded-[22px] bg-[#fff1e6] p-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f47b20] text-white">✓</span>
+      <div className="flex items-center gap-3 rounded-[22px] bg-[#FFF1E0] p-4">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F7992B] text-white">✓</span>
         <div>
-          <p className="text-lg font-bold text-[#f47b20]">{finished ? "Zakończone" : "W trakcie"}</p>
-          <p className="text-sm text-[#667085]">
+          <p className="text-lg font-bold text-[#F7992B]">{finished ? "Zakończone" : "W trakcie"}</p>
+          <p className="text-sm text-[#4A5A75]">
             {finished ? "Zlecenie jest zamknięte." : "Dokończ kroki, aby zakończyć zadanie."}
           </p>
         </div>
       </div>
       {!finished && job.address ? (
         <p className={`mt-4 ${cardClass()} text-sm`}>
-          <span className="block text-xs text-[#98a2b3]">Adres</span>
+          <span className="block text-xs text-[#7D8CA5]">Adres</span>
           <span className="font-semibold">{job.address}</span>
         </p>
       ) : null}
@@ -230,7 +230,7 @@ function Active({
             <div className="flex flex-col items-center">
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                  step.done ? "bg-[#f47b20] text-white" : "border-2 border-[#f0d3bc] text-[#f0d3bc]"
+                  step.done ? "bg-[#F7992B] text-white" : "border-2 border-[#E3E8F0] text-[#E3E8F0]"
                 }`}
               >
                 {step.done ? "✓" : ""}
@@ -239,7 +239,7 @@ function Active({
             </div>
             <div className="pb-3">
               <p className="font-semibold">{step.title}</p>
-              <p className="text-sm text-[#667085]">{step.detail}</p>
+              <p className="text-sm text-[#4A5A75]">{step.detail}</p>
             </div>
           </li>
         ))}
@@ -250,7 +250,7 @@ function Active({
           <OrangeButton onClick={() => onAct(job.id, "done")}>Zakończ zadanie</OrangeButton>
           <button
             type="button"
-            className="flex h-12 w-full items-center justify-center rounded-2xl border border-[#f0d3bc] bg-white text-[15px] font-semibold"
+            className="flex h-12 w-full items-center justify-center rounded-2xl border border-[#E3E8F0] bg-white text-[15px] font-semibold"
           >
             Skontaktuj się z MOPS
           </button>
@@ -264,7 +264,7 @@ function Row({ icon, text }: { icon: "clock" | "pin" | "time"; text: string }) {
   const mark = icon === "pin" ? "⌖" : icon === "time" ? "◷" : "○";
   return (
     <p className="flex items-center gap-3">
-      <span className="w-5 text-center text-[#f47b20]">{mark}</span>
+      <span className="w-5 text-center text-[#F7992B]">{mark}</span>
       {text}
     </p>
   );
@@ -273,7 +273,7 @@ function Row({ icon, text }: { icon: "clock" | "pin" | "time"; text: string }) {
 function IconBadge({ kind }: { kind: "pharmacy" | "shop" | "visit" }) {
   const label = kind === "pharmacy" ? "💊" : kind === "shop" ? "🛒" : "🚶";
   return (
-    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#fff1e6] text-xl">{label}</span>
+    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FFF1E0] text-xl">{label}</span>
   );
 }
 

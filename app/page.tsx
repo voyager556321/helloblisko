@@ -23,19 +23,19 @@ export default function Home() {
   return (
     <Phone>
       <p className="text-[28px] leading-tight font-bold">Profil zespołu</p>
-      <p className="mt-1 text-sm text-[#667085]">Trzy role jednej filii. Wygląd pod telefon.</p>
+      <p className="mt-1 text-sm text-[#4A5A75]">Trzy role jednej filii. Wygląd pod telefon.</p>
       <div className="mt-6 space-y-3">
         {entries.map((entry) => (
           <Link key={entry.href} href={entry.href} className={`block ${cardClass()}`}>
             <p className="text-lg font-semibold">{entry.title}</p>
-            <p className="mt-1 text-sm text-[#667085]">{entry.text}</p>
+            <p className="mt-1 text-sm text-[#4A5A75]">{entry.text}</p>
           </Link>
         ))}
       </div>
       <div className="mt-6">
         <OrangeButton onClick={reset}>Resetuj dane demo</OrangeButton>
       </div>
-      {note ? <p className="mt-3 text-sm text-[#667085]">{note}</p> : null}
+      {note ? <p className="mt-3 text-sm text-[#4A5A75]">{note}</p> : null}
     </Phone>
   );
 }

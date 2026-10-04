@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import {
   audioPath,
   createRequest,
-  latestForHome,
+  homeFeed,
   listRequests,
   newAudioName,
 } from "@/lib/store";
@@ -22,7 +22,7 @@ export async function GET(_req: Request, ctx: Ctx) {
   if (!(await assertToken(token))) {
     return Response.json({ error: "Невідомий пристрій" }, { status: 404 });
   }
-  return Response.json({ latest: await latestForHome() });
+  return Response.json(await homeFeed());
 }
 
 export async function POST(req: Request, ctx: Ctx) {
@@ -37,7 +37,12 @@ export async function POST(req: Request, ctx: Ctx) {
   let mime: string | null = null;
 
   if (contentType.includes("application/json")) {
-    const body = (await req.json()) as { transcript?: string };
+    let body: { transcript?: string } = {};
+    try {
+      body = (await req.json()) as { transcript?: string };
+    } catch {
+      return Response.json({ error: "Порожня фраза" }, { status: 400 });
+    }
     transcript = body.transcript?.trim() ?? "";
     if (!transcript) return Response.json({ error: "Порожня фраза" }, { status: 400 });
   } else {
