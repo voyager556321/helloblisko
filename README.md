@@ -1,20 +1,27 @@
-# Hack Year 2026
+# HaloBlisko
 
-Project repository for **Hack Year 2026**, a hackathon event held in Kraków, Poland at the **Tauron Arena**.
+Osoba w domu mówi, czego potrzebuje. Koordynatorka filii słyszy nagranie i wybiera jedną osobę ze swojej listy. Reszta listy tego zgłoszenia nie widzi.
 
-## About the event
+To aplikacja w przeglądarce, nie program ze sklepu. Płaci gmina za filię, nie senior i nie wolontariusz.
 
-Hack Year 2026 brings together developers, designers, and innovators for an intensive hackathon hosted at Tauron Arena in Kraków — one of the largest multi-purpose arenas in Poland.
+## Jak to działa
 
-## About this repository
+1. W domu jest jedno nagranie. Druga kontrola anuluje otwartą prośbę.
+2. Nagranie słyszy koordynatorka. Wolontariusze go nie słyszą. Jeśli w nagraniu padnie czterocyfrowy kod, trafia do sprawy i znika z tekstu, który widzą inni. PESEL jest już w teczce ośrodka.
+3. Koordynatorka poprawia zdanie, jeśli trzeba, i wybiera jedną osobę z listy filii. Pod imieniem jest spokojna informacja, ile zwykle trwa taka sama sprawa.
+4. Ta osoba widzi zadanie bez adresu. Po „Przyjmij zadanie” pojawiają się adres, PESEL i kod. Po „Zakończ zadanie” znikają.
 
-This repository contains the project(s) built during the event.
+Nowych osób nikt w aplikacji nie szuka. Do listy dodaje je ośrodek. Każda organizacja ma własną listę.
 
-## Getting started
+## Trzy wejścia
+
+- Dom Anny: `/d/home-anna`
+- Koordynatorka: `/coord`
+- Wolontariusz Jan: `/v?as=v-jan`
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) on a phone-width viewport. Optional speech-to-text: set `GROQ_API_KEY`. Without it, the coordinator listens to the audio file.
+Potem otwórz [http://localhost:3000](http://localhost:3000) w wąskim oknie, jak na telefonie. Mikrofon w telefonie potrzebuje adresu `https`.
